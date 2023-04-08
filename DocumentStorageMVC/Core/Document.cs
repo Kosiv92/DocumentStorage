@@ -1,10 +1,11 @@
 ﻿namespace DocumentStorageMVC.Core
 {
-    public class Document
+    public class Document : BaseEntity
     {
+
         public string Title { get; set; }
 
-        public DateTimeOffset Data { get; set; }
+        public DateTimeOffset Date { get; set; }
 
         public string Author { get; set; }
 

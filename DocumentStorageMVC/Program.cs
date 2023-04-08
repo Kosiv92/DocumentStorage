@@ -11,7 +11,12 @@ namespace DocumentStorageMVC
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
-            var identityConnectionString = builder.Configuration.GetConnectionString("IdentityDbConnection") ?? throw new InvalidOperationException("Connection string 'IdentityDbConnection' not found.");
+            var identityConnectionString = builder.Configuration.GetConnectionString("IdentityDbConnection")
+                ?? throw new InvalidOperationException("Connection string 'IdentityDbConnection' not found.");
+
+            var appConnectionString = builder.Configuration.GetConnectionString("ApplicationDbConnection")
+                ?? throw new InvalidOperationException("Connection string 'ApplicationDbConnection' not found.");
+
             builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
                 options.UseSqlServer(identityConnectionString));
 
