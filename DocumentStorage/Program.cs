@@ -1,3 +1,6 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
+
 namespace DocumentStorage
 {
     public class Program
@@ -8,6 +11,13 @@ namespace DocumentStorage
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(option =>
+                {
+                    option.LoginPath = "/Auth/Login";
+                    option.ExpireTimeSpan = TimeSpan.FromMinutes(30);
+                });
 
             var app = builder.Build();
 
@@ -25,12 +35,13 @@ namespace DocumentStorage
             app.UseRouting();
 
             app.UseAuthorization();
+            app.UseAuthorization();
 
-            //app.MapControllerRoute(
-            //    name: "default",
-            //    pattern: "{controller=Home}/{action=Index}/{id?}");
+            app.MapControllerRoute(
+                name: "default",
+                pattern: "{controller=Auth}/{action=Login}/{id?}");
 
-            app.MapDefaultControllerRoute();
+            //app.MapDefaultControllerRoute();
 
             app.Run();
         }

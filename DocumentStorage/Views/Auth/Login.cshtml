@@ -14,9 +14,16 @@
     <div class="block">
         <label>Password</label>
         <input asp-for="Password" class="input"/>
-    </div>
+    </div>    
     <div class="block">
-        <button type="submit" class="button">SignIn </button>
+        <button type="submit" class="button">SignIn</button>
     </div>
-    
+
+    @if(ViewData["ValidateMessage"] != null)
+    {
+        <br />
+        <br />
+        <label>@ViewData["ValidateMessage"]</label>
+    }
+
 </form>
