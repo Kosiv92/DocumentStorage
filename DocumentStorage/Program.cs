@@ -39,7 +39,8 @@ namespace DocumentStorage
 
             app.MapControllerRoute(
                 name: "default",
-                pattern: "{controller=Auth}/{action=Login}/{id?}");
+                //pattern: "{controller=Auth}/{action=Login}/{id?}");
+                pattern: "{controller=Account}/{action=Register}/{id?}");
 
             //app.MapDefaultControllerRoute();
 
