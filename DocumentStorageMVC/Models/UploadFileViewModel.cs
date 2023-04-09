@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DocumentStorageMVC.Core;
+using System.ComponentModel.DataAnnotations;
 
 namespace DocumentStorageMVC.Models
 {
@@ -6,6 +7,8 @@ namespace DocumentStorageMVC.Models
     {        
         public string Title { get; set; }
 
+        public IFormFile File { get; set; }
 
+        public DocumentType DocumentType { get; set; }
     }
 }

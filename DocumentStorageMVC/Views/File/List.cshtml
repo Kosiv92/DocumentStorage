@@ -1,0 +1,11 @@
+﻿@model IQueryable<Document>
+
+<h3>Список документов в хранилище:</h3>
+    @foreach (var document in Model)
+    {
+      <ul>
+          <li>
+               <span>@document.Title @document.DocumentType @document.Date @document.Author</span>
+          </li>
+      </ul>
+    }

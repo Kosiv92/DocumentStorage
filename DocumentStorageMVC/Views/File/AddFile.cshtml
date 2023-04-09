@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Document>
+
+@{
+    ViewData["Title"] = "Добавление документа";
+}
+
+<h3>Выберите документ для загрузки</h3>
+<form asp-action="AddFile" asp-controller="File" method="post" enctype="multipart/form-data">
+    <div>Наименование документа</div>
+    <input type="text" name="Title" /> <br>
+    <div>Тип документа</div>
+    <div>
+        <input type="radio" name="DocumentType" id="Internal" value="Internal" />
+        <label for="Internal">Internal</label>
+    </div>
+    <div>
+        <input type="radio" name="DocumentType" id="External" value="External" />
+        <label for="External">External</label>
+    </div>    
+    <div>Файл</div>
+    <input type="file" name="File" /> <br>
+    <input type="submit" value="Загрузить" /> <br>
+</form>

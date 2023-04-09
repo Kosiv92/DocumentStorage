@@ -20,6 +20,9 @@ namespace DocumentStorageMVC
             builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
                 options.UseSqlServer(identityConnectionString));
 
+            builder.Services.AddDbContext<ApplicationDbContext>(options =>
+                options.UseSqlServer(appConnectionString));
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
