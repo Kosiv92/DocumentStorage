@@ -1,11 +1,39 @@
-﻿@model IQueryable<Document>
+﻿@model List<Document>
 
 <h3>Список документов в хранилище:</h3>
+<table class="table">
+    <tr>
+        <th>
+            <a asp-action="List" asp-route-sortOrder="@ViewBag.TitleSort">
+                Наименование
+            </a>
+        </th>
+        <th>
+            <a asp-action="List" asp-route-sortOrder="@ViewBag.DateSort">
+                Дата и время    
+            </a>
+        </th>
+         <th>
+            <a asp-action="List" asp-route-sortOrder="@ViewBag.AuthorSort">
+                Автор   
+            </a>
+        </th>
+        <th>
+            <a asp-action="List" asp-route-sortOrder="@ViewBag.DocumentTypeSort">
+                Тип документа   
+            </a>
+        </th>
+    </tr>
     @foreach (var document in Model)
-    {
-      <ul>
-          <li>
-               <span>@document.Title @document.DocumentType @document.Date @document.Author</span>
-          </li>
-      </ul>
+    { 
+       <tr>
+            <td> @document.Title </td>
+            <td> @document.Date </td>
+            <td> @document.Author </td>
+            <td> @document.DocumentType </td>
+       </tr>                                           
     }
+</table>    
+
+
+            

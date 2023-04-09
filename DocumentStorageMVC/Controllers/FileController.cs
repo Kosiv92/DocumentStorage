@@ -22,10 +22,28 @@ namespace DocumentStorageMVC.Controllers
             _dbContext = dbContext;
         }
 
-        public IActionResult List()
+        public async Task<IActionResult> List(SortState sortOrder = SortState.TitleAsc)
         {
-            var documents = _dbContext.Documents.AsNoTracking();
-            return View(documents);
+            IQueryable<Document> documents = _dbContext.Documents;
+
+            ViewData["TitleSort"] = sortOrder == SortState.TitleAsc ? SortState.TitleDesc : SortState.TitleAsc;
+            ViewData["DateSort"] = sortOrder == SortState.DateAsc ? SortState.DateDesc : SortState.DateAsc;
+            ViewData["AuthorSort"] = sortOrder == SortState.AuthorAsc ? SortState.AuthorDesc : SortState.AuthorAsc;
+            ViewData["DocumentTypeSort"] = sortOrder == SortState.DocumentTypeAsc ? SortState.DocumentTypeDesc : SortState.DocumentTypeAsc;
+
+            documents = sortOrder switch
+            {
+                SortState.TitleAsc => documents.OrderBy(s => s.Title),
+                SortState.TitleDesc => documents.OrderByDescending(s => s.Title),
+                SortState.DateAsc => documents.OrderBy(s => s.Date),
+                SortState.DateDesc => documents.OrderByDescending(s => s.Date),
+                SortState.AuthorAsc => documents.OrderBy(s => s.Author),
+                SortState.AuthorDesc => documents.OrderByDescending(s => s.Author),
+                SortState.DocumentTypeAsc => documents.OrderBy(s => s.DocumentType),
+                SortState.DocumentTypeDesc => documents.OrderByDescending(s => s.DocumentType)
+            };
+
+            return View(await documents.AsNoTracking().ToListAsync());
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

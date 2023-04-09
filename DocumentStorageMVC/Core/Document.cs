@@ -19,4 +19,16 @@
         External,
         Internal
     }
+
+    public enum SortState
+    {
+        TitleAsc,
+        TitleDesc,
+        DateAsc,
+        DateDesc,
+        AuthorAsc,
+        AuthorDesc,
+        DocumentTypeAsc,
+        DocumentTypeDesc
+    }
 }
