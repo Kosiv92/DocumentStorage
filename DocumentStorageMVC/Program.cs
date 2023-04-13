@@ -1,6 +1,8 @@
+using DocumentStorageMVC.Core;
 using DocumentStorageMVC.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using System.Reflection;
 
 namespace DocumentStorageMVC
 {
@@ -23,13 +25,22 @@ namespace DocumentStorageMVC
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(appConnectionString));
 
+            builder.Services.AddScoped<IRepository<Document>, DocumentRepository>();
+
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
             builder.Services.AddControllersWithViews();
 
+            builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
+
+            builder.Services.AddMediatR(c => c.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly()));
+
             var app = builder.Build();
+
+            DirectoryInfo dirInfo = new DirectoryInfo(app.Environment.WebRootPath + "/Files/");
+            if (!dirInfo.Exists) dirInfo.Create();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())

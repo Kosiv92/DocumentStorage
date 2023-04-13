@@ -1,23 +1,28 @@
-﻿@model IEnumerable<Document>
-
+﻿@model CreateDocumentCommand
 @{
     ViewData["Title"] = "Добавление документа";
 }
 
-<h3>Выберите документ для загрузки</h3>
+<h3>Загрузить документ</h3>
 <form asp-action="AddFile" asp-controller="File" method="post" enctype="multipart/form-data">
-    <div>Наименование документа</div>
-    <input type="text" name="Title" /> <br>
-    <div>Тип документа</div>
-    <div>
-        <input type="radio" name="DocumentType" id="Internal" value="Internal" />
-        <label for="Internal">Internal</label>
+    <div class="body">
+        <strong><label asp-for="Title" class="font "></label></strong><br>
+        <input type="text" name="Title" asp-for="Title" value="@Model.Title" class="form-control-sm" required/><br>
+        <span asp-validation-for="Title" class="attention"></span>
     </div>
-    <div>
-        <input type="radio" name="DocumentType" id="External" value="External" />
-        <label for="External">External</label>
-    </div>    
-    <div>Файл</div>
-    <input type="file" name="File" /> <br>
-    <input type="submit" value="Загрузить" /> <br>
+    <div class="body">
+        <strong><label asp-for="DocumentType"></label></strong></><br>
+        <label>Внутренний</label>
+        <input type="radio" name="DocumentType" id="Internal" value="Internal" asp-for="DocumentType"/><br>        
+        <label>Внешний</label>
+        <input type="radio" name="DocumentType" id="External" value="External" asp-for="DocumentType"/><br>    
+        <span asp-validation-for="DocumentType" class="attention"></span>
+    </div>
+    <div id="drop-area" class="body">        
+        <strong><label asp-for="File" class="button"/></strong><br>
+        <input type="file" name="File" asp-for="File" class="btn-sm" required/><br>
+        <span asp-validation-for="File" class="attention"></span>
+    </div>   
+    
+    <input type="submit" value="Загрузить" class="btn-sm"/> <br>
 </form>

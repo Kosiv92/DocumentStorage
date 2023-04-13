@@ -1,7 +1,9 @@
 ﻿using DocumentStorageMVC.Core;
 using DocumentStorageMVC.Data;
 using DocumentStorageMVC.Models;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
@@ -11,39 +13,34 @@ namespace DocumentStorageMVC.Controllers
     [Authorize]
     public class FileController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
-        private IWebHostEnvironment _appEnv;
-        private ApplicationDbContext _dbContext;
+        private readonly IWebHostEnvironment _appEnv;
+        private readonly IRepository<Document> _repository;
+        private readonly IMediator _mediator;
 
-        public FileController(ILogger<HomeController> logger, IWebHostEnvironment appEnvironment, ApplicationDbContext dbContext)
+        public FileController(IWebHostEnvironment appEnvironment, IRepository<Document> repository, IMediator mediator)
         {
-            _logger = logger;
             _appEnv = appEnvironment;
-            _dbContext = dbContext;
+            _repository = repository;
+            _mediator = mediator;
         }
 
-        public async Task<IActionResult> List(SortState sortOrder = SortState.TitleAsc)
-        {
-            IQueryable<Document> documents = _dbContext.Documents;
+        [HttpGet]
+        public async Task<IActionResult> List(string title, SortState sortOrder = SortState.TitleAsc)
+        {           
+            var request = new GetDocumentListQuery()
+                { TitleFilter = title, SortOrder = sortOrder };
 
-            ViewData["TitleSort"] = sortOrder == SortState.TitleAsc ? SortState.TitleDesc : SortState.TitleAsc;
-            ViewData["DateSort"] = sortOrder == SortState.DateAsc ? SortState.DateDesc : SortState.DateAsc;
-            ViewData["AuthorSort"] = sortOrder == SortState.AuthorAsc ? SortState.AuthorDesc : SortState.AuthorAsc;
-            ViewData["DocumentTypeSort"] = sortOrder == SortState.DocumentTypeAsc ? SortState.DocumentTypeDesc : SortState.DocumentTypeAsc;
-
-            documents = sortOrder switch
+            try
             {
-                SortState.TitleAsc => documents.OrderBy(s => s.Title),
-                SortState.TitleDesc => documents.OrderByDescending(s => s.Title),
-                SortState.DateAsc => documents.OrderBy(s => s.Date),
-                SortState.DateDesc => documents.OrderByDescending(s => s.Date),
-                SortState.AuthorAsc => documents.OrderBy(s => s.Author),
-                SortState.AuthorDesc => documents.OrderByDescending(s => s.Author),
-                SortState.DocumentTypeAsc => documents.OrderBy(s => s.DocumentType),
-                SortState.DocumentTypeDesc => documents.OrderByDescending(s => s.DocumentType)
-            };
+                var viewModel = await _mediator.Send(request);
+                return View(viewModel);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "File");
+            }
 
-            return View(await documents.AsNoTracking().ToListAsync());
+            
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -55,35 +52,41 @@ namespace DocumentStorageMVC.Controllers
         [HttpGet]
         public IActionResult AddFile()
         {
-            return View();
+            return PartialView();
         }
 
-
         [HttpPost]
-        public async Task<IActionResult> AddFile(UploadFileViewModel uploadFileViewModel)
+        public async Task<IActionResult> AddFile(CreateDocumentCommand request)
         {
-            if (uploadFileViewModel.File != null)
+            if (!ModelState.IsValid)
             {
-                string path = "/Files/" + uploadFileViewModel.File.FileName;
+                return View("List");
+            }
 
-                using (var fs = new FileStream(_appEnv.WebRootPath + path, FileMode.Create))
-                {
-                    await uploadFileViewModel.File.CopyToAsync(fs);
-                }
+            request.Author = HttpContext.User.Identity.Name;
 
-                var document = new Document
-                {
-                    Title = uploadFileViewModel.Title,
-                    Date = DateTime.Now,
-                    Author = HttpContext.User.Identity.Name,
-                    DocumentType = uploadFileViewModel.DocumentType,
-                    Path = path
-                };
-                _dbContext.Documents.Add(document);
-                _dbContext.SaveChanges();
+            try
+            {
+                await _mediator.Send(request);
+            }
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "File");
             }
 
             return RedirectToAction("List", "File");
+        }
+
+        public async Task<IActionResult> GetFile(Guid id)
+        {
+            var document = await _repository.GetById(id);
+            if (document != null)
+            {
+                string filePath = _appEnv.WebRootPath + document.Path;
+                string fileExtension = filePath.Substring(filePath.LastIndexOf('.'));
+                return PhysicalFile(filePath, "application/octet-stream", document.Title + fileExtension);
+            }
+            return RedirectToAction("Error", "File");
         }
     }
 }

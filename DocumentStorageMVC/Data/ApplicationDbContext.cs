@@ -1,5 +1,5 @@
 ﻿using DocumentStorageMVC.Core;
-using DocumentStorageMVC.Data.Config;
+using DocumentStorageMVC.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 

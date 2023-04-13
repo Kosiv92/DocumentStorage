@@ -1,4 +1,6 @@
-﻿namespace DocumentStorageMVC.Core
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace DocumentStorageMVC.Core
 {
     public class Document : BaseEntity
     {
@@ -15,8 +17,8 @@
     }
 
     public enum DocumentType
-    {
-        External,
+    {        
+        External,        
         Internal
     }
 

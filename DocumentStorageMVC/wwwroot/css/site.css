@@ -20,3 +20,19 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.attention {
+    color: red
+}
+
+.leftblock {
+    float: left;
+    width: 30%;
+    height: 100%;
+    overflow: auto;    
+}
+
+.rightblock {
+    height: 100%;
+    overflow: auto;
+}

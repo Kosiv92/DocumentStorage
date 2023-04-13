@@ -1,39 +1,88 @@
-﻿@model List<Document>
+﻿@model IndexViewModel
 
-<h3>Список документов в хранилище:</h3>
-<table class="table">
+<div class="leftblock">
+    @await Html.PartialAsync("AddFile", Model.CreateDocumentCommand)
+</div>
+
+<div class="rightblock">
+    <h3>Список документов в хранилище:</h3>
+
+<form method="get">
+    <div>
+        <label>Наименование: </label>
+        <input name="title" value="@Model.FilterViewModel.SelectedTitle" class="form-control-sm"/>
+        <input type="submit" value="Поиск" class="btn-sm"/>
+    </div>
+</form>
+
+<table class="table table-sm">
     <tr>
         <th>
-            <a asp-action="List" asp-route-sortOrder="@ViewBag.TitleSort">
+            <a  asp-action="List"
+                asp-route-sortOrder="@(Model.SortViewModel.TitleSort)"
+                asp-route-title="@(Model.FilterViewModel.SelectedTitle)">
                 Наименование
             </a>
         </th>
         <th>
-            <a asp-action="List" asp-route-sortOrder="@ViewBag.DateSort">
+            <a  asp-action="List"
+                asp-route-sortOrder="@(Model.SortViewModel.DateSort)"
+                asp-route-title="@(Model.FilterViewModel.SelectedTitle)">
                 Дата и время    
             </a>
         </th>
          <th>
-            <a asp-action="List" asp-route-sortOrder="@ViewBag.AuthorSort">
+            <a  asp-action="List"
+                asp-route-sortOrder="@(Model.SortViewModel.AuthorSort)"
+                asp-route-title="@(Model.FilterViewModel.SelectedTitle)">
                 Автор   
             </a>
         </th>
         <th>
-            <a asp-action="List" asp-route-sortOrder="@ViewBag.DocumentTypeSort">
+            <a  asp-action="List"
+                asp-route-sortOrder="@(Model.SortViewModel.DocumentTypeSort)"
+                asp-route-title="@(Model.FilterViewModel.SelectedTitle)">
                 Тип документа   
             </a>
+        </th>        
+        <th>
+            Скачать
         </th>
     </tr>
-    @foreach (var document in Model)
-    { 
-       <tr>
-            <td> @document.Title </td>
-            <td> @document.Date </td>
-            <td> @document.Author </td>
-            <td> @document.DocumentType </td>
-       </tr>                                           
-    }
-</table>    
+        @foreach (var document in Model.Documents)
+        {
+            <tr>
+                <td> @if (document.Title.Length > 30)
+                    {
+                        @String.Concat(document.Title.Substring(9, 30), "...")                   
+                    }
+                    else
+                    {
+                        @document.Title
+                    }                 
+                 </td>
+                <td> @document.Date </td>
+                <td> @document.Author </td>
+                <td>                
+                    @if (document.DocumentType == DocumentType.Internal)
+                    {
+                        @: Внутренний                
+                    }
+                    else
+                    {
+                        @: Внешний  
+                    }
+                </td>
+                <td>
+                    <a asp-action="GetFile" asp-route-id=@document.Id>
+                                <img src="https://img.icons8.com/ios-filled/512/downloading-updates.png" alt="Скачать"
+                            width="15" height="15"/>
+                    </a>
+                </td>
+           </tr>                                           
+        }
+</table>   
+</div>
 
 
             

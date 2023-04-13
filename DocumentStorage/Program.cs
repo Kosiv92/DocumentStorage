@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
+using System.IO;
 
 namespace DocumentStorage
 {
@@ -18,8 +19,11 @@ namespace DocumentStorage
                     option.LoginPath = "/Auth/Login";
                     option.ExpireTimeSpan = TimeSpan.FromMinutes(30);
                 });
-
+                        
             var app = builder.Build();
+
+            DirectoryInfo dirInfo = new DirectoryInfo(app.Environment.WebRootPath + "/Files/");
+            if (!dirInfo.Exists) dirInfo.Create();
 
             // Configure the HTTP request pipeline.
             if (!app.Environment.IsDevelopment())
@@ -28,6 +32,8 @@ namespace DocumentStorage
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+                        
+            
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

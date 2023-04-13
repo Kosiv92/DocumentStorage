@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace DocumentStorageMVC.Data.Config
+namespace DocumentStorageMVC.Data
 {
     public class DocumentConfiguration : IEntityTypeConfiguration<Document>
     {
