@@ -16,7 +16,9 @@ namespace DocumentStorageMVC.Core
 
         public async Task<Guid> Handle(CreateDocumentCommand request, CancellationToken cancellationToken)
         {
-            request.Path = "/Files/" + request.File.FileName;
+            string fileExtension = request.File.FileName.Substring(request.File.FileName.LastIndexOf('.'));                        
+
+            request.Path = "/Files/" + request.Title + fileExtension;
 
             using (var fs = new FileStream(_appEnv.WebRootPath + request.Path, FileMode.Create))
             {

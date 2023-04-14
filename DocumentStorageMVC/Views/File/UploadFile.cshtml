@@ -4,7 +4,7 @@
 }
 
 <h3>Загрузить документ</h3>
-<form asp-action="AddFile" asp-controller="File" method="post" enctype="multipart/form-data">
+<form asp-action="UploadFile" asp-controller="File" method="post" enctype="multipart/form-data">
     <div class="body">
         <strong><label asp-for="Title" class="font "></label></strong><br>
         <input type="text" name="Title" asp-for="Title" value="@Model.Title" class="form-control-sm" required/><br>
@@ -18,9 +18,11 @@
         <input type="radio" name="DocumentType" id="External" value="External" asp-for="DocumentType"/><br>    
         <span asp-validation-for="DocumentType" class="attention"></span>
     </div>
-    <div id="drop-area" class="body">        
+    <div class="upload">        
         <strong><label asp-for="File" class="button"/></strong><br>
-        <input type="file" name="File" asp-for="File" class="btn-sm" required/><br>
+        <input type="file" asp-for="File" name="File" class="form-control"
+        onchange="displayName(this, 'name')/>
+        <ul> id="name" class="d-flex justify-content-start flex-wrap"></ul>
         <span asp-validation-for="File" class="attention"></span>
     </div>   
     

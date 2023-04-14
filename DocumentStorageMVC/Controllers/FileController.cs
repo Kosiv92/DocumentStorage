@@ -12,18 +12,12 @@ namespace DocumentStorageMVC.Controllers
 {
     [Authorize]
     public class FileController : Controller
-    {
-        private readonly IWebHostEnvironment _appEnv;
-        private readonly IRepository<Document> _repository;
+    {        
         private readonly IMediator _mediator;
 
-        public FileController(IWebHostEnvironment appEnvironment, IRepository<Document> repository, IMediator mediator)
-        {
-            _appEnv = appEnvironment;
-            _repository = repository;
-            _mediator = mediator;
-        }
-
+        public FileController(IMediator mediator)
+            => _mediator = mediator;
+       
         [HttpGet]
         public async Task<IActionResult> List(string title, SortState sortOrder = SortState.TitleAsc)
         {           
@@ -38,9 +32,7 @@ namespace DocumentStorageMVC.Controllers
             catch (Exception ex)
             {
                 return RedirectToAction("Error", "File");
-            }
-
-            
+            }            
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
@@ -50,13 +42,13 @@ namespace DocumentStorageMVC.Controllers
         }
 
         [HttpGet]
-        public IActionResult AddFile()
+        public IActionResult UploadFile()
         {
             return PartialView();
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFile(CreateDocumentCommand request)
+        public async Task<IActionResult> UploadFile(CreateDocumentCommand request)
         {
             if (!ModelState.IsValid)
             {
@@ -77,16 +69,17 @@ namespace DocumentStorageMVC.Controllers
             return RedirectToAction("List", "File");
         }
 
-        public async Task<IActionResult> GetFile(Guid id)
-        {
-            var document = await _repository.GetById(id);
-            if (document != null)
+        public async Task<IActionResult> DownloadFile(Guid id)
+        {            
+            try
             {
-                string filePath = _appEnv.WebRootPath + document.Path;
-                string fileExtension = filePath.Substring(filePath.LastIndexOf('.'));
-                return PhysicalFile(filePath, "application/octet-stream", document.Title + fileExtension);
+                var dto = await _mediator.Send(new UploadDocumentQuery(id));
+                return PhysicalFile(dto.FilePath, "application/octet-stream", dto.FileName);
             }
-            return RedirectToAction("Error", "File");
+            catch (Exception ex)
+            {
+                return RedirectToAction("Error", "File");
+            }                        
         }
     }
 }

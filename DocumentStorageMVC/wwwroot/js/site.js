@@ -3,4 +3,11 @@
 
 // Write your JavaScript code.
 
-
+//function displayName(input, target) {
+//    const output = document.getElementById(target);
+//    output.innerHTML = '';
+//    let el = document.createElement('li');
+//    el.innerText = input.name;
+//    output.appendChild(el);    
+//    }
+//}
