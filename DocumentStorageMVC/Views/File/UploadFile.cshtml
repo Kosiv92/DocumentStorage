@@ -8,23 +8,26 @@
     <div class="body">
         <strong><label asp-for="Title" class="font "></label></strong><br>
         <input type="text" name="Title" asp-for="Title" value="@Model.Title" class="form-control-sm" required/><br>
-        <span asp-validation-for="Title" class="attention"></span>
+        @*<span asp-validation-for="Title" class="attention"></span>*@
     </div>
     <div class="body">
-        <strong><label asp-for="DocumentType"></label></strong></><br>
+        <strong><label asp-for="DocumentType"></label></strong></><br>         
         <label>Внутренний</label>
         <input type="radio" name="DocumentType" id="Internal" value="Internal" asp-for="DocumentType"/><br>        
         <label>Внешний</label>
         <input type="radio" name="DocumentType" id="External" value="External" asp-for="DocumentType"/><br>    
-        <span asp-validation-for="DocumentType" class="attention"></span>
+        @*<span asp-validation-for="DocumentType" class="attention"></span>*@        
     </div>
-    <div class="upload">        
-        <strong><label asp-for="File" class="button"/></strong><br>
-        <input type="file" asp-for="File" name="File" class="form-control"
-        onchange="displayName(this, 'name')/>
-        <ul> id="name" class="d-flex justify-content-start flex-wrap"></ul>
+    
+    <div class="body">    
+        <strong><label asp-for="File"></label></strong><br>
+        <div class="upload">
+            <input type="file" asp-for="File" name="File" class="form-control" required
+            onchange="displayName('name')" id='name'/>
+            @*<ul id="name" class="d-flex justify-content-start flex-wrap"></ul>*@
         <span asp-validation-for="File" class="attention"></span>
+        </div>        
     </div>   
     
-    <input type="submit" value="Загрузить" class="btn-sm"/> <br>
+    <input type="submit" value="Загрузить" class="btn-sm lastbutton"/> <br>
 </form>

@@ -25,7 +25,8 @@ namespace DocumentStorageMVC.Core
                 await request.File.CopyToAsync(fs);
             }            
 
-            var document = _mapper.Map<Document>(request);            
+            var document = _mapper.Map<Document>(request);
+            document.Date = DateTimeOffset.Now;                        
 
             var result = _repository.Create(document);
             _repository.SaveChangesAsync();

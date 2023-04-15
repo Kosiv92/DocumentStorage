@@ -11,7 +11,7 @@ namespace DocumentStorageMVC.Core
         public string Title { get; set; }
 
         [Required(ErrorMessage = "Укажите файл для загрузки")]
-        [Display(Name = "Файл")]
+        [Display(Name = "Перетащите в поле файл для загрузки")]
         public IFormFile File { get; set; }
 
         [Required(ErrorMessage = "Укажите тип документа")]

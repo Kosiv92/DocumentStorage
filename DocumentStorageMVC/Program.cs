@@ -10,27 +10,13 @@ namespace DocumentStorageMVC
     {
         public static void Main(string[] args)
         {
-            var builder = WebApplication.CreateBuilder(args);
+            var builder = WebApplication.CreateBuilder(args);                        
 
-            // Add services to the container.
-            var identityConnectionString = builder.Configuration.GetConnectionString("IdentityDbConnection")
-                ?? throw new InvalidOperationException("Connection string 'IdentityDbConnection' not found.");
-
-            var appConnectionString = builder.Configuration.GetConnectionString("ApplicationDbConnection")
-                ?? throw new InvalidOperationException("Connection string 'ApplicationDbConnection' not found.");
-
-            builder.Services.AddDbContext<ApplicationIdentityDbContext>(options =>
-                options.UseSqlServer(identityConnectionString));
-
-            builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                options.UseSqlServer(appConnectionString));
-
-            builder.Services.AddScoped<IRepository<Document>, DocumentRepository>();
-
-            builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+            builder.Services.AddDbConnections(builder.Configuration);                       
 
             builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationIdentityDbContext>();
+
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddAutoMapper(Assembly.GetExecutingAssembly());
@@ -49,8 +35,7 @@ namespace DocumentStorageMVC
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
-                // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
+                app.UseExceptionHandler("/Home/Error");                
                 app.UseHsts();
             }
 
